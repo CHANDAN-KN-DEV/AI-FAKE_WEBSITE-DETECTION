@@ -24,16 +24,14 @@ export default function WhatsAppForwardChecker({ onSubmit, isLoading }: Props) {
           className="w-full pl-11 pr-4 py-3 bg-secondary border border-green-500/20 rounded-xl text-sm placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-500/50 transition-all resize-none"
         />
       </div>
-      <motion.button
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
+      <button
         onClick={() => text.trim() && onSubmit(text.trim())}
         disabled={isLoading || !text.trim()}
-        className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+        className="w-full btn-3d-success btn-lg flex items-center justify-center gap-2"
       >
         {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Search className="w-4 h-4" />}
         {isLoading ? t('check.analyzing') : t('check.submit')}
-      </motion.button>
+      </button>
     </div>
   );
 }

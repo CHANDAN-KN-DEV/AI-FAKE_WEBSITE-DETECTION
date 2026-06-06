@@ -60,16 +60,14 @@ export default function URLInputCard({ onSubmit, isLoading }: Props) {
         </motion.div>
       )}
 
-      <motion.button
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
+      <button
         onClick={() => url.trim() && onSubmit(url.trim())}
         disabled={isLoading || !url.trim()}
-        className="w-full py-3 bg-gradient-to-r from-blue-500 to-violet-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+        className="w-full btn-3d-primary btn-lg flex items-center justify-center gap-2"
       >
         {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Search className="w-4 h-4" />}
         {isLoading ? t('check.analyzing') : t('check.submit')}
-      </motion.button>
+      </button>
     </div>
   );
 }

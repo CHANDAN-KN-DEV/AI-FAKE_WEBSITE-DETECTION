@@ -1,54 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: #f8fafc;
+    --background: #f0f4ff;
     --foreground: #0f172a;
-    
     --card: #ffffff;
     --card-foreground: #0f172a;
-    
-    --primary: #3b82f6;
+    --primary: #4f46e5;
     --primary-foreground: #ffffff;
-    
-    --secondary: #f1f5f9;
+    --secondary: #e8ecf8;
     --secondary-foreground: #1e293b;
-    
-    --border: #e2e8f0;
-    
-    --verified: #22c55e;
+    --border: #c7d2fe;
+
+    --verified: #10b981;
     --misleading: #f59e0b;
-    --false: #ef4444;
+    --false: #f43f5e;
+
+    /* 3D button shadow colors */
+    --btn-primary-shadow: #3730a3;
+    --btn-secondary-shadow: #a0aec0;
+    --btn-danger-shadow: #be123c;
+    --btn-success-shadow: #047857;
+    --btn-warning-shadow: #b45309;
+    --btn-ghost-shadow: #94a3b8;
   }
 
   .dark {
-    --background: #020617;
-    --foreground: #f8fafc;
-    
-    --card: #0f172a;
-    --card-foreground: #f8fafc;
-    
-    --primary: #3b82f6;
+    --background: #080c1a;
+    --foreground: #e2e8f0;
+    --card: #0f1629;
+    --card-foreground: #e2e8f0;
+    --primary: #6366f1;
     --primary-foreground: #ffffff;
-    
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-    
-    --border: #334155;
-    
-    --verified: #22c55e;
+    --secondary: #1a2035;
+    --secondary-foreground: #e2e8f0;
+    --border: #1e2d4a;
+
+    --verified: #10b981;
     --misleading: #f59e0b;
-    --false: #ef4444;
+    --false: #f43f5e;
+
+    --btn-primary-shadow: #3730a3;
+    --btn-secondary-shadow: #0f172a;
+    --btn-danger-shadow: #9f1239;
+    --btn-success-shadow: #065f46;
+    --btn-warning-shadow: #92400e;
+    --btn-ghost-shadow: #1e293b;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased transition-colors duration-300;
+    @apply bg-background text-foreground antialiased transition-colors duration-300;
+    font-family: 'Inter', sans-serif;
   }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+  }
+}
+
+/* ─── 3D Button System ─────────────────────────────────────────────────────── */
+@layer components {
+
+  /* Base 3D button */
+  .btn-3d {
+    @apply relative inline-flex items-center justify-center gap-2 font-semibold rounded-xl
+           select-none cursor-pointer transition-none;
+    transform-style: preserve-3d;
+    transition: transform 80ms ease, box-shadow 80ms ease;
+    will-change: transform, box-shadow;
+  }
+
+  .btn-3d:active {
+    transform: translateY(3px);
+  }
+
+  /* ── Primary (Indigo/Violet gradient) */
+  .btn-3d-primary {
+    @apply btn-3d text-white;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #7c3aed 100%);
+    box-shadow:
+      0 6px 0 var(--btn-primary-shadow),
+      0 8px 16px rgba(99, 102, 241, 0.45),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .btn-3d-primary:hover {
+    background: linear-gradient(135deg, #7577f3 0%, #9d6ef8 50%, #8b4cf5 100%);
+    box-shadow:
+      0 8px 0 var(--btn-primary-shadow),
+      0 12px 24px rgba(99, 102, 241, 0.55),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .btn-3d-primary:active {
+    box-shadow:
+      0 2px 0 var(--btn-primary-shadow),
+      0 4px 8px rgba(99, 102, 241, 0.3),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(4px);
+  }
+  .btn-3d-primary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+    transform: none !important;
+    box-shadow: 0 4px 0 var(--btn-primary-shadow) !important;
+  }
+
+  /* ── Cyan (AI / Analyze) */
+  .btn-3d-cyan {
+    @apply btn-3d text-white;
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    box-shadow:
+      0 6px 0 #0e7490,
+      0 8px 16px rgba(6, 182, 212, 0.40),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .btn-3d-cyan:hover {
+    box-shadow:
+      0 8px 0 #0e7490,
+      0 12px 24px rgba(6, 182, 212, 0.55),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .btn-3d-cyan:active {
+    box-shadow:
+      0 2px 0 #0e7490,
+      0 4px 8px rgba(6, 182, 212, 0.3),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(4px);
+  }
+
+  /* ── Danger (Red) */
+  .btn-3d-danger {
+    @apply btn-3d text-white;
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    box-shadow:
+      0 6px 0 var(--btn-danger-shadow),
+      0 8px 16px rgba(244, 63, 94, 0.40),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .btn-3d-danger:hover {
+    box-shadow:
+      0 8px 0 var(--btn-danger-shadow),
+      0 12px 24px rgba(244, 63, 94, 0.55),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .btn-3d-danger:active {
+    box-shadow:
+      0 2px 0 var(--btn-danger-shadow),
+      0 4px 8px rgba(244, 63, 94, 0.3),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(4px);
+  }
+
+  /* ── Success (Green) */
+  .btn-3d-success {
+    @apply btn-3d text-white;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow:
+      0 6px 0 var(--btn-success-shadow),
+      0 8px 16px rgba(16, 185, 129, 0.40),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .btn-3d-success:hover {
+    box-shadow:
+      0 8px 0 var(--btn-success-shadow),
+      0 12px 24px rgba(16, 185, 129, 0.55),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .btn-3d-success:active {
+    box-shadow:
+      0 2px 0 var(--btn-success-shadow),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(4px);
+  }
+
+  /* ── Warning (Amber) */
+  .btn-3d-warning {
+    @apply btn-3d text-white;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow:
+      0 6px 0 var(--btn-warning-shadow),
+      0 8px 16px rgba(245, 158, 11, 0.40),
+      0 2px 4px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .btn-3d-warning:hover {
+    box-shadow:
+      0 8px 0 var(--btn-warning-shadow),
+      0 12px 24px rgba(245, 158, 11, 0.55),
+      inset 0 1px 0 rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+  }
+  .btn-3d-warning:active {
+    box-shadow:
+      0 2px 0 var(--btn-warning-shadow),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(4px);
+  }
+
+  /* ── Ghost / Secondary */
+  .btn-3d-ghost {
+    @apply btn-3d;
+    background: var(--secondary);
+    color: var(--foreground);
+    box-shadow:
+      0 5px 0 var(--btn-ghost-shadow),
+      0 6px 12px rgba(0,0,0,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .btn-3d-ghost:hover {
+    box-shadow:
+      0 7px 0 var(--btn-ghost-shadow),
+      0 10px 20px rgba(0,0,0,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+  .btn-3d-ghost:active {
+    box-shadow:
+      0 2px 0 var(--btn-ghost-shadow),
+      inset 0 1px 0 rgba(0,0,0,0.05);
+    transform: translateY(3px);
+  }
+
+  /* ── Icon-only pill (Navbar +, Bell, etc.) */
+  .btn-3d-icon {
+    @apply btn-3d rounded-xl p-2;
+    background: var(--secondary);
+    color: var(--foreground);
+    box-shadow:
+      0 4px 0 var(--btn-ghost-shadow),
+      0 5px 10px rgba(0,0,0,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .btn-3d-icon:hover {
+    box-shadow:
+      0 6px 0 var(--btn-ghost-shadow),
+      0 8px 16px rgba(0,0,0,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+  .btn-3d-icon:active {
+    box-shadow:
+      0 1px 0 var(--btn-ghost-shadow),
+      inset 0 1px 0 rgba(0,0,0,0.05);
+    transform: translateY(3px);
+  }
+
+  /* ── Sizes */
+  .btn-sm { @apply px-3 py-1.5 text-xs rounded-lg; }
+  .btn-md { @apply px-5 py-2.5 text-sm rounded-xl; }
+  .btn-lg { @apply px-7 py-3.5 text-base rounded-xl; }
+  .btn-xl { @apply px-9 py-4 text-lg rounded-2xl; }
+
+  /* ─── Glassmorphism Cards ────────────────────────────────────────────────── */
+  .glass-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .dark .glass-card {
+    background: rgba(15,22,41,0.7);
+    border: 1px solid rgba(99,102,241,0.12);
+  }
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* ─── Selection ──────────────────────────────────────────────────────────── */
+::selection {
+  background: rgba(99,102,241,0.3);
+  color: var(--foreground);
 }

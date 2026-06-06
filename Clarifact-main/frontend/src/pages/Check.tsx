@@ -70,7 +70,7 @@ export default function Check() {
         <p className="text-sm text-foreground/50 mb-6">{t('check.subtitle')}</p>
 
         {/* Tab bar */}
-        <div className="flex gap-1 p-1 bg-secondary rounded-xl mb-6 overflow-x-auto">
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.key;
@@ -80,25 +80,21 @@ export default function Check() {
                 key={tab.key}
                 onClick={() => !isLoading && setActiveTab(tab.key)}
                 disabled={isLoading && !isSubmitted}
-                className={`relative flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  isActive && isSubmitted && isLoading
-                    ? 'bg-gradient-to-r from-blue-500/20 to-violet-500/20 text-primary border border-primary/30 shadow-sm'
-                    : isActive
-                    ? 'bg-card text-foreground shadow-sm'
-                    : 'text-foreground/50 hover:text-foreground'
-                }`}
+                className={`btn-3d btn-md whitespace-nowrap ${
+                  isActive ? 'btn-3d-primary' : 'btn-3d-ghost'
+                } disabled:opacity-40`}
               >
                 {isSubmitted && isLoading ? (
                   <span className="relative flex w-4 h-4">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60"></span>
-                    <CheckCircle2 className="relative w-4 h-4 text-primary" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-60"></span>
+                    <CheckCircle2 className="relative w-4 h-4" />
                   </span>
                 ) : (
                   <Icon className="w-4 h-4" />
                 )}
                 <span className="hidden sm:inline">{t(tab.label)}</span>
                 {isSubmitted && isLoading && (
-                  <span className="hidden sm:inline text-xs text-primary font-semibold ml-1">✓</span>
+                  <span className="hidden sm:inline text-xs font-semibold ml-1">✓</span>
                 )}
               </button>
             );

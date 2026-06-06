@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, FileText, Lightbulb, RefreshCw, Cpu, ShieldCheck, AlertTriangle, CheckCircle2, HelpCircle, Instagram } from 'lucide-react';
+import { ArrowLeft, FileText, Lightbulb, RefreshCw, Cpu, ShieldCheck, AlertTriangle, CheckCircle2, HelpCircle, Instagram, Share2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import VerdictCard from '@/components/results/VerdictCard';
 import ConfidenceMeter from '@/components/results/ConfidenceMeter';
 import SuspiciousSentenceHighlighter from '@/components/results/SuspiciousSentenceHighlighter';
@@ -86,9 +87,8 @@ export default function Result() {
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4 pb-24 lg:pb-6">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <Link to="/check" className="flex items-center gap-2 text-sm text-foreground/50 hover:text-foreground transition-colors">
+        <Link to="/check" className="btn-3d-ghost btn-sm inline-flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" /> {t('common.back')}
         </Link>
         <div className="flex gap-2 flex-wrap justify-end">
@@ -101,18 +101,35 @@ export default function Result() {
           {isPending && (
             <button
               onClick={() => fetchResult()}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium bg-secondary text-foreground/60 hover:text-foreground"
+              className="btn-3d-ghost btn-sm"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Refresh
             </button>
           )}
           <button
             onClick={() => setSimpleMode(!simpleMode)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${simpleMode ? 'bg-primary text-primary-foreground' : 'bg-secondary text-foreground/60 hover:text-foreground'
-              }`}
+            className={`btn-3d btn-sm ${simpleMode ? 'btn-3d-cyan' : 'btn-3d-ghost'}`}
           >
             <Lightbulb className="w-3.5 h-3.5" />
             {t('result.explainSimple')}
+          </button>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              toast.success('Report link copied to clipboard!', {
+                icon: '🔗',
+                style: {
+                  borderRadius: '12px',
+                  background: '#0f172a',
+                  color: '#fff',
+                  border: '1px solid rgba(99, 102, 241, 0.2)'
+                }
+              });
+            }}
+            className="btn-3d-ghost btn-sm"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            Share Report
           </button>
         </div>
       </div>
@@ -171,14 +188,14 @@ export default function Result() {
           <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-3">Authority Actions</p>
           <div className="flex flex-wrap gap-2">
             {([
-              { label: 'Mark as Fake', status: 'confirmed_fake', color: 'bg-false/10 text-false hover:bg-false/20' },
-              { label: 'Mark as Real', status: 'verified_real', color: 'bg-verified/10 text-verified hover:bg-verified/20' },
-              { label: 'Mark as Misleading', status: 'misleading', color: 'bg-misleading/10 text-misleading hover:bg-misleading/20' },
-              { label: 'Escalate Review', status: 'under_investigation', color: 'bg-secondary text-foreground/60 hover:bg-secondary/80' },
-            ] as { label: string; status: AuthorityVerdictStatus; color: string }[]).map((action) => (
+              { label: 'Mark as Fake', status: 'confirmed_fake', cls: 'btn-3d-danger' },
+              { label: 'Mark as Real', status: 'verified_real', cls: 'btn-3d-success' },
+              { label: 'Mark as Misleading', status: 'misleading', cls: 'btn-3d-warning' },
+              { label: 'Escalate Review', status: 'under_investigation', cls: 'btn-3d-ghost' },
+            ] as { label: string; status: AuthorityVerdictStatus; cls: string }[]).map((action) => (
               <button
                 key={action.status}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${action.color}`}
+                className={`btn-3d btn-sm ${action.cls}`}
                 onClick={() => {}}
               >
                 <ShieldCheck className="w-3.5 h-3.5" />

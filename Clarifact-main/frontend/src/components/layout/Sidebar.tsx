@@ -29,10 +29,10 @@ export default function Sidebar() {
               key={link.to}
               to={link.to}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
+                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border-l-4',
                 active
-                  ? 'bg-primary/10 text-primary shadow-sm'
-                  : 'text-foreground/50 hover:text-foreground hover:bg-secondary'
+                  ? 'border-primary bg-primary/10 text-primary shadow-[inset_0_2px_4px_rgba(99,102,241,0.15)] shadow-sm translate-x-1'
+                  : 'border-transparent text-foreground/50 hover:text-foreground hover:bg-secondary hover:translate-x-1'
               )}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />

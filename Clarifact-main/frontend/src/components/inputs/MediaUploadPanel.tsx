@@ -134,12 +134,11 @@ export default function MediaUploadPanel({ onSubmit }: Props) {
               <p className="text-sm font-medium">Drop an image or short video</p>
               <p className="text-xs text-foreground/40 mt-1">PNG, JPG, WEBP, MP4 · Max 10MB</p>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-secondary rounded-xl text-sm font-medium"
+            <div
+              className="btn-3d-ghost btn-md inline-flex items-center gap-2"
             >
               <Upload className="w-4 h-4" /> Browse Files
-            </motion.div>
+            </div>
           </>
         ) : (
           <div className="w-full space-y-3">
@@ -195,13 +194,13 @@ export default function MediaUploadPanel({ onSubmit }: Props) {
         >
           <button
             onClick={handleClear}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-secondary text-foreground/60 hover:text-foreground transition-colors"
+            className="btn-3d-ghost btn-md flex items-center gap-2"
           >
             <X className="w-4 h-4" /> Clear
           </button>
           <button
             onClick={handleSubmit}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:opacity-90 transition-opacity"
+            className="btn-3d-primary btn-md flex-1 flex items-center justify-center gap-2"
           >
             <Image className="w-4 h-4" /> Analyse Image for Fake News
           </button>

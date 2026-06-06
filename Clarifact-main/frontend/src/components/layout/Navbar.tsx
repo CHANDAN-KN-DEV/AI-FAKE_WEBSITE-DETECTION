@@ -65,7 +65,7 @@ export default function Navbar() {
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-shadow">
                 <Shield className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent hidden sm:block">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent hidden sm:block" style={{fontFamily:"'Space Grotesk',sans-serif"}}>
                 Clarifact
               </span>
             </Link>
@@ -95,10 +95,11 @@ export default function Navbar() {
                   <button
                     id="create-post-button"
                     onClick={() => setCreateOpen(!createOpen)}
-                    className="relative p-2 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all"
+                    className="btn-3d-primary btn-sm"
                     title="Create"
                   >
-                    <Plus className={`w-5 h-5 transition-transform duration-200 ${createOpen ? 'rotate-45' : ''}`} />
+                    <Plus className={`w-4 h-4 transition-transform duration-200 ${createOpen ? 'rotate-45' : ''}`} />
+                    <span className="hidden sm:inline text-xs">Create</span>
                   </button>
 
                   <AnimatePresence>
@@ -138,10 +139,10 @@ export default function Navbar() {
               <ThemeToggle />
 
               {isAuthenticated && (
-                <Link to="/notifications" className="relative p-2 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors">
+                <Link to="/notifications" className="btn-3d-icon relative" title="Notifications">
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-false text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-card">
                       {unreadCount}
                     </span>
                   )}
@@ -152,12 +153,12 @@ export default function Navbar() {
                 <div className="relative hidden md:block">
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center gap-2 p-1.5 pl-3 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors"
+                    className="btn-3d-ghost btn-sm flex items-center gap-2"
                   >
-                    <span className="text-sm font-medium truncate max-w-[100px]">{user?.name?.split(' ')[0]}</span>
-                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
+                    <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
                       {user?.name?.[0] || 'U'}
                     </div>
+                    <span className="text-sm font-medium truncate max-w-[80px]">{user?.name?.split(' ')[0]}</span>
                   </button>
                   <AnimatePresence>
                     {profileOpen && (
@@ -184,7 +185,7 @@ export default function Navbar() {
                           </Link>
                         )}
                         <hr className="border-border" />
-                        <button onClick={() => { logout(); setProfileOpen(false); navigate('/login'); }} className="flex items-center gap-2.5 px-4 py-3 hover:bg-secondary transition-colors text-sm w-full text-false">
+                        <button onClick={() => { logout(); setProfileOpen(false); navigate('/login'); }} className="flex items-center gap-2.5 px-4 py-3 hover:bg-red-500/10 transition-colors text-sm w-full text-red-400">
                           <LogOut className="w-4 h-4" /> {t('nav.logout')}
                         </button>
                       </motion.div>
@@ -194,7 +195,7 @@ export default function Navbar() {
               )}
 
               {/* Mobile hamburger */}
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 rounded-xl bg-secondary">
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden btn-3d-icon">
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
@@ -234,7 +235,7 @@ export default function Navbar() {
                     <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground/60 hover:bg-secondary">
                       {t('nav.profile')}
                     </Link>
-                    <button onClick={() => { logout(); setMobileMenuOpen(false); navigate('/login'); }} className="block w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-false hover:bg-secondary">
+                    <button onClick={() => { logout(); setMobileMenuOpen(false); navigate('/login'); }} className="block w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-secondary">
                       {t('nav.logout')}
                     </button>
                   </>

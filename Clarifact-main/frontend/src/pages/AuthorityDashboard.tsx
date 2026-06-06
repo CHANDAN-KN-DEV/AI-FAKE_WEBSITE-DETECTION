@@ -154,16 +154,16 @@ export default function AuthorityDashboard() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key as any)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
+            className={`btn-3d btn-md whitespace-nowrap ${
               activeTab === tab.key
-                ? 'bg-violet-500/15 text-violet-400 border border-violet-400/30'
-                : 'bg-secondary text-foreground/60 hover:text-foreground border border-transparent'
+                ? 'btn-3d-primary text-white'
+                : 'btn-3d-ghost'
             }`}
           >
             {tab.icon}
             {tab.label}
             <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-              activeTab === tab.key ? 'bg-violet-400/20 text-violet-300' : 'bg-secondary text-foreground/40'
+              activeTab === tab.key ? 'bg-white/20 text-white' : 'bg-secondary text-foreground/40'
             }`}>
               {tab.count}
             </span>
@@ -301,34 +301,34 @@ function PendingList({ claims, votingId, expandedId, onExpand, onVote }: {
                     {/* Verdict buttons */}
                     <div>
                       <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-3">Cast Your Official Verdict</p>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 gap-3">
                         <button
                           disabled={isVoting}
                           onClick={() => onVote(claim.id, 'TRUE')}
-                          className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-400/30 hover:bg-emerald-500/25 transition-all disabled:opacity-40"
+                          className="btn-3d-success btn-md flex items-center justify-center gap-2"
                         >
                           <ThumbsUp className="w-4 h-4" /> Real / Verified
                         </button>
                         <button
                           disabled={isVoting}
                           onClick={() => onVote(claim.id, 'FALSE')}
-                          className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold bg-red-500/15 text-red-400 border border-red-400/30 hover:bg-red-500/25 transition-all disabled:opacity-40"
+                          className="btn-3d-danger btn-md flex items-center justify-center gap-2"
                         >
                           <ThumbsDown className="w-4 h-4" /> Fake / False
                         </button>
                         <button
                           disabled={isVoting}
                           onClick={() => onVote(claim.id, 'MISLEADING')}
-                          className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold bg-orange-500/15 text-orange-400 border border-orange-400/30 hover:bg-orange-500/25 transition-all disabled:opacity-40"
+                          className="btn-3d-warning btn-md flex items-center justify-center gap-2"
                         >
                           <AlertTriangle className="w-4 h-4" /> Misleading
                         </button>
                         <button
                           disabled={isVoting}
                           onClick={() => onVote(claim.id, 'UNVERIFIED')}
-                          className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold bg-secondary text-foreground/50 border border-border hover:bg-secondary/80 transition-all disabled:opacity-40"
+                          className="btn-3d-ghost btn-md flex items-center justify-center gap-2 text-foreground"
                         >
-                          <Clock className="w-4 h-4" /> Needs More Info
+                          <Clock className="w-4 h-4" /> Needs Info
                         </button>
                       </div>
                     </div>
@@ -435,11 +435,11 @@ function CommunityPostQueue({ posts, votingId, onVerdict }: {
                   )}
                 </div>
               </div>
-              <div className="flex gap-2 mt-4 ml-11">
-                <button disabled={isVoting} onClick={() => onVerdict(post.id, 'approved')} className="flex-1 py-2 rounded-xl text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-400/30 hover:bg-emerald-500/25 transition-all disabled:opacity-40 flex items-center justify-center gap-1.5">
+              <div className="flex gap-3 mt-4 ml-11">
+                <button disabled={isVoting} onClick={() => onVerdict(post.id, 'approved')} className="btn-3d-success btn-sm flex-1 flex items-center justify-center gap-1.5">
                   <ThumbsUp className="w-3.5 h-3.5" /> Approve
                 </button>
-                <button disabled={isVoting} onClick={() => onVerdict(post.id, 'rejected')} className="flex-1 py-2 rounded-xl text-xs font-semibold bg-red-500/15 text-red-400 border border-red-400/30 hover:bg-red-500/25 transition-all disabled:opacity-40 flex items-center justify-center gap-1.5">
+                <button disabled={isVoting} onClick={() => onVerdict(post.id, 'rejected')} className="btn-3d-danger btn-sm flex-1 flex items-center justify-center gap-1.5">
                   <ThumbsDown className="w-3.5 h-3.5" /> Reject
                 </button>
               </div>

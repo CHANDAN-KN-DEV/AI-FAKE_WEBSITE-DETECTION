@@ -29,19 +29,17 @@ export default function ClaimInputBox({ onSubmit, isLoading }: Props) {
         />
         <span className="absolute bottom-3 right-3 text-xs text-foreground/30">{text.length}/2000</span>
       </div>
-      <motion.button
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
+      <button
         type="submit"
         disabled={isLoading || !text.trim()}
-        className="w-full py-3 bg-gradient-to-r from-blue-500 to-violet-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
+        className="btn-3d-primary btn-lg w-full"
       >
         {isLoading ? (
           <><Loader2 className="w-5 h-5 animate-spin" /> {t('check.analyzing')}</>
         ) : (
           <><Search className="w-4 h-4" /> {t('check.submit')}</>
         )}
-      </motion.button>
+      </button>
     </form>
   );
 }

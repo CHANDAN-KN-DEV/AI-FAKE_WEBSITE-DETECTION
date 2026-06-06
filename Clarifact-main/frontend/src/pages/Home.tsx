@@ -43,16 +43,16 @@ export default function Home() {
           <p className="text-lg text-foreground/50 mb-8 max-w-xl mx-auto">
             {t('home.subtitle')}
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/check"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-blue-500 to-violet-600 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"
+              className="btn-3d-primary btn-xl inline-flex items-center justify-center gap-2"
             >
               <Search className="w-5 h-5" /> {t('home.cta')}
             </Link>
             <Link
               to="/dashboard"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-secondary text-foreground font-semibold rounded-xl hover:bg-secondary/80 transition-all"
+              className="btn-3d-ghost btn-xl inline-flex items-center justify-center gap-2"
             >
               View Dashboard <ArrowRight className="w-4 h-4" />
             </Link>

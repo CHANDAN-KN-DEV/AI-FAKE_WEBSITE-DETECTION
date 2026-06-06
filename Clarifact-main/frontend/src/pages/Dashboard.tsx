@@ -8,6 +8,37 @@ import { getTopPicks, getAlerts, getAuthorityCompletedClaims } from '@/services/
 import { useLanguageStore } from '@/store/languageStore';
 import type { TopPick, Alert, VerdictType } from '@/types';
 
+// Simple interactive stats count-up animation component
+function CountUp({ value }: { value: string }) {
+  const [count, setCount] = useState(0);
+  const target = parseInt(value.replace(/,/g, ''), 10) || 0;
+
+  useEffect(() => {
+    if (target === 0) {
+      setCount(0);
+      return;
+    }
+    let start = 0;
+    const duration = 800; // ms
+    const increment = Math.ceil(target / 25);
+    const stepTime = 30; // ms
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) {
+        clearInterval(timer);
+        setCount(target);
+      } else {
+        setCount(start);
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [target]);
+
+  return <>{isNaN(target) ? value : count.toLocaleString()}</>;
+}
+
 export default function Dashboard() {
   const [topPicks, setTopPicks] = useState<TopPick[]>([]);
   const [authorityPicks, setAuthorityPicks] = useState<TopPick[]>([]);
@@ -19,6 +50,7 @@ export default function Dashboard() {
     { label: 'Active Validators', value: '0', color: 'text-violet-400' },
   ]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const { t } = useLanguageStore();
 
   useEffect(() => {
@@ -53,10 +85,10 @@ export default function Dashboard() {
         const verifiedToday = tp.filter((p) => p.verdict === 'verified').length;
         const activeValidators = Math.max(1, al.length);
         setStats([
-          { label: 'Total Claims', value: totalClaims.toLocaleString(), color: 'text-primary' },
-          { label: 'Verified Today', value: verifiedToday.toLocaleString(), color: 'text-verified' },
-          { label: 'False Detected', value: falseDetected.toLocaleString(), color: 'text-false' },
-          { label: 'Active Validators', value: activeValidators.toLocaleString(), color: 'text-violet-400' },
+          { label: 'Total Claims', value: totalClaims.toString(), color: 'text-primary' },
+          { label: 'Verified Today', value: verifiedToday.toString(), color: 'text-verified' },
+          { label: 'False Detected', value: falseDetected.toString(), color: 'text-false' },
+          { label: 'Active Validators', value: activeValidators.toString(), color: 'text-violet-400' },
         ]);
         setLoading(false);
       });
@@ -79,15 +111,18 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="p-4 rounded-2xl bg-card border border-border text-center"
+            whileHover={{ y: -4, scale: 1.02 }}
+            className="p-5 rounded-2xl bg-card border border-border text-center shadow-md hover:shadow-indigo-500/5 relative overflow-hidden group transition-all duration-300"
           >
-            <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-            <p className="text-xs text-foreground/40 mt-1">{stat.label}</p>
+            {/* Background neon visual flare */}
+            <div className="absolute -right-6 -bottom-6 w-16 h-16 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all pointer-events-none" />
+            <p className={`text-3xl font-extrabold tracking-tight ${stat.color} font-display relative z-10`}>
+              <CountUp value={stat.value} />
+            </p>
+            <p className="text-xs font-semibold text-foreground/50 tracking-wider uppercase mt-1 relative z-10">{stat.label}</p>
           </motion.div>
         ))}
       </div>
-
-
 
       {/* Alerts */}
       <div>
@@ -97,13 +132,39 @@ export default function Dashboard() {
 
       {/* Verified By Authorities Cards */}
       <div>
-        <h3 className="font-semibold mb-4 flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-violet-400" /> Verified By Authorities
-        </h3>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <h3 className="font-semibold flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-violet-400" /> Verified By Authorities
+          </h3>
+          {/* Quick search input */}
+          <div className="relative max-w-xs w-full">
+            <input
+              type="text"
+              placeholder="Search reports..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-secondary/80 border border-border/80 rounded-xl text-xs placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+            />
+            <svg className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[...authorityPicks, ...topPicks].slice(0, 3).map((pick) => (
-            <FeaturedClaimCard key={pick.id} claim={pick} />
-          ))}
+          {(() => {
+            const combined = [...authorityPicks, ...topPicks];
+            const filtered = combined.filter(pick => 
+              pick.claim.toLowerCase().includes(searchQuery.toLowerCase()) || 
+              pick.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              pick.verdict.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            if (filtered.length === 0) {
+              return <p className="text-sm text-foreground/40 col-span-full py-4 text-center">No matching verified reports found.</p>;
+            }
+            return filtered.slice(0, 6).map((pick) => (
+              <FeaturedClaimCard key={pick.id} claim={pick} />
+            ));
+          })()}
         </div>
       </div>
     </div>

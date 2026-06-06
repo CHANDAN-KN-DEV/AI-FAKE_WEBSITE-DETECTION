@@ -65,25 +65,25 @@ export default function LoginForm() {
       className="space-y-5"
     >
       {/* Role selector */}
-      <div className="flex gap-2 p-1 bg-secondary rounded-xl">
+      <div className="flex gap-2">
         <button
           type="button"
           onClick={() => setLoginAs('user')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-medium transition-all ${
-            loginAs === 'user' ? 'bg-card text-foreground shadow-sm' : 'text-foreground/50 hover:text-foreground'
+          className={`flex-1 btn-3d btn-sm ${
+            loginAs === 'user' ? 'btn-3d-primary' : 'btn-3d-ghost'
           }`}
         >
-          Login as User
+          User
         </button>
         <button
           type="button"
           onClick={() => setLoginAs('authority')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-medium transition-all ${
-            loginAs === 'authority' ? 'bg-card text-foreground shadow-sm' : 'text-foreground/50 hover:text-foreground'
+          className={`flex-1 btn-3d btn-sm ${
+            loginAs === 'authority' ? 'btn-3d-primary' : 'btn-3d-ghost'
           }`}
         >
-          <ShieldCheck className="w-4 h-4 text-violet-400" />
-          Login as Authority
+          <ShieldCheck className="w-4 h-4" />
+          Authority
         </button>
       </div>
 
@@ -151,12 +151,10 @@ export default function LoginForm() {
         <a href="#" className="text-primary hover:underline">{t('auth.forgotPassword')}</a>
       </div>
 
-      <motion.button
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
+      <button
         type="submit"
         disabled={isLoading}
-        className="w-full py-3 bg-gradient-to-r from-blue-500 to-violet-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-60"
+        className="btn-3d-primary btn-lg w-full"
       >
         {isLoading ? (
           <Loader2 className="w-5 h-5 animate-spin" />
@@ -166,7 +164,7 @@ export default function LoginForm() {
             <ArrowRight className="w-4 h-4" />
           </>
         )}
-      </motion.button>
+      </button>
 
       <p className="text-center text-sm text-foreground/50">
         {t('auth.noAccount')}{' '}

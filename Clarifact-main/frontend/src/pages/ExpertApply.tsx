@@ -267,15 +267,13 @@ export default function ExpertApply() {
             />
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
+          <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full btn-3d-primary btn-lg flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><ArrowRight className="w-4 h-4" /> Submit Authority Request</>}
-          </motion.button>
+          </button>
         </form>
       </motion.div>
     </div>

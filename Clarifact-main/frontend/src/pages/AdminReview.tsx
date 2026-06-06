@@ -110,16 +110,16 @@ export default function AdminReview() {
                 Applied by {item.user?.email || item.userId} • {new Date(item.createdAt).toLocaleDateString()}
               </div>
               {item.status === 'pending' && (
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <button
                     onClick={() => handleAction(item.id, 'approved')}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-verified/10 text-verified rounded-xl text-sm font-medium hover:bg-verified/20 transition-colors"
+                    className="btn-3d-success btn-sm flex items-center gap-1.5"
                   >
                     <Check className="w-4 h-4" /> Grant Authority
                   </button>
                   <button
                     onClick={() => handleAction(item.id, 'rejected')}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-false/10 text-false rounded-xl text-sm font-medium hover:bg-false/20 transition-colors"
+                    className="btn-3d-danger btn-sm flex items-center gap-1.5"
                   >
                     <X className="w-4 h-4" /> Deny Access
                   </button>

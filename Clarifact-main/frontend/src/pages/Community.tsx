@@ -127,7 +127,7 @@ export default function Community() {
           </div>
           <button
             onClick={() => setShowCreatePost(true)}
-            className="px-4 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.98] transition-all"
+            className="btn-3d-primary btn-md"
           >
             + New Post
           </button>
@@ -142,10 +142,8 @@ export default function Community() {
               key={opt.value}
               onClick={() => setFilter(opt.value)}
               className={cn(
-                'px-3 py-1.5 rounded-lg text-xs font-medium border whitespace-nowrap transition-all',
-                filter === opt.value
-                  ? 'bg-primary/20 text-primary border-primary/40'
-                  : 'bg-secondary/50 text-foreground/50 border-border hover:border-primary/30'
+                'btn-3d btn-sm whitespace-nowrap',
+                filter === opt.value ? 'btn-3d-primary' : 'btn-3d-ghost'
               )}
             >
               {opt.label}

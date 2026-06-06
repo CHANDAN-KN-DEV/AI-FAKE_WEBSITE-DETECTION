@@ -86,15 +86,13 @@ export default function RegisterForm() {
         </div>
       </div>
 
-      <motion.button
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
+      <button
         type="submit"
         disabled={isLoading}
-        className="w-full py-3 bg-gradient-to-r from-blue-500 to-violet-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-60"
+        className="btn-3d-primary btn-lg w-full"
       >
         {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{t('auth.register')} <ArrowRight className="w-4 h-4" /></>}
-      </motion.button>
+      </button>
 
       <p className="text-center text-sm text-foreground/50">
         {t('auth.hasAccount')}{' '}

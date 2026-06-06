@@ -91,21 +91,21 @@ export default function Notifications() {
             )}
           </div>
         </motion.div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {unreadCount > 0 && (
             <button
               onClick={markAllRead}
-              className="text-xs text-primary hover:underline flex items-center gap-1"
+              className="btn-3d-ghost btn-sm flex items-center gap-1.5"
             >
-              <Check className="w-3 h-3" /> Mark all read
+              <Check className="w-3.5 h-3.5" /> Mark all read
             </button>
           )}
           {notifications.length > 0 && (
             <button
               onClick={clearAll}
-              className="text-xs text-false hover:underline flex items-center gap-1"
+              className="btn-3d-danger btn-sm flex items-center gap-1.5"
             >
-              <Trash2 className="w-3 h-3" /> Clear all
+              <Trash2 className="w-3.5 h-3.5" /> Clear all
             </button>
           )}
         </div>
