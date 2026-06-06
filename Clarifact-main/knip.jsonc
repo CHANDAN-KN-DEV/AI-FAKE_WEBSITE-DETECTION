@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "project": ["**/*.{ts,tsx}"],
+  "workspaces": {
+    "backend": {
+      "entry": ["src/server.ts", "src/test-api.ts"],
+      "project": ["src/**/*.ts"]
+    },
+    "frontend": {
+      "entry": ["src/main.tsx"],
+      "project": ["src/**/*.{ts,tsx}"]
+    },
+    "mobile": {
+      "entry": ["App.tsx", "index.ts"],
+      "project": ["**/*.{ts,tsx}"]
+    }
+  }
+}

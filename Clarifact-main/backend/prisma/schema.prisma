@@ -1,0 +1,614 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  user
+  validator
+  expert
+  admin
+}
+
+enum ClaimStatus {
+  pending
+  analyzing
+  reviewed
+  resolved
+}
+
+enum VerdictLabel {
+  TRUE
+  FALSE
+  MISLEADING
+  UNVERIFIED
+}
+
+enum ContentType {
+  text
+  url
+  whatsapp
+  image
+  video
+  voice
+}
+
+enum Language {
+  en
+  hi
+  kn
+  unknown
+}
+
+enum VoteValue {
+  TRUE
+  FALSE
+  MISLEADING
+}
+
+enum ExpertApplicationStatus {
+  pending
+  approved
+  rejected
+  suspended
+}
+
+enum EvidenceType {
+  link
+  file
+  quote
+}
+
+enum SourceType {
+  official
+  news
+  factcheck
+  academic
+  social
+  other
+}
+
+enum AlertType {
+  claimBecameFalse
+  claimBecameMisleading
+  voteDisputed
+  authorityApproved
+}
+
+enum AuditAction {
+  REGISTER
+  LOGIN
+  LOGOUT
+  CLAIM_SUBMIT
+  VOTE_SUBMIT
+  EXPERT_APPLY
+  EXPERT_MODERATE
+  FEATURED_REFRESH
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(user)
+  isActive     Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions          Session[]
+  profile           Profile?
+  claims            Claim[]
+  votes             CommunityVote[]
+  validatorProfile  ValidatorProfile?
+  expertApplication ExpertApplication?
+  moderatedExpertApplications ExpertApplication[] @relation("ExpertModeration")
+  trustScores       TrustScore[]
+  alerts            Alert[]
+  auditLogs         AuditLog[]
+  badges            UserBadge[]
+  communityPosts    CommunityPost[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  revokedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String?
+  locale    Language @default(unknown)
+  region    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Claim {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String?
+  normalizedKey String?
+  status        ClaimStatus @default(pending)
+  contentType   ContentType
+  language      Language    @default(unknown)
+  category      String?
+  region        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inputs          ClaimInput[]
+  aiAnalyses      AIAnalysis[]
+  emotionalSignals EmotionalSignal[]
+  trustedSources  TrustedSource[]
+  verifiedUpdates VerifiedUpdate[]
+  votes           CommunityVote[]
+  consensus       ConsensusResult?
+  featuredItems   FeaturedClaim[]
+  clusters        ClaimClusterMember[]
+  alerts          Alert[]
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([normalizedKey])
+}
+
+model ClaimInput {
+  id        String      @id @default(uuid())
+  claimId   String
+  claim     Claim       @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  type      ContentType
+  rawText   String?
+  rawUrl    String?
+  rawMeta   Json?
+  mediaUrl  String?
+  mimeType  String?
+  sha256    String?
+
+  createdAt DateTime @default(now())
+
+  @@index([claimId])
+  @@index([type])
+}
+
+model AIAnalysis {
+  id               String   @id @default(uuid())
+  claimId           String
+  claim             Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  provider          String
+  model             String?
+  task              String
+  promptVersion     String   @default("v1")
+  inputSummary      String?
+
+  // core outputs
+  extractedClaims   Json?
+  fakeProbability   Float?
+  confidence        Float?
+  suspiciousSentences Json?
+  sourceCredibility Float?
+  explanation       String?
+  eli10             String?
+  rawJson           Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([claimId])
+  @@index([provider, task])
+  @@index([createdAt])
+}
+
+model EmotionalSignal {
+  id        String   @id @default(uuid())
+  claimId   String
+  claim     Claim    @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  fear       Float  @default(0)
+  anger      Float  @default(0)
+  urgency    Float  @default(0)
+  scarcity   Float  @default(0)
+  outrage    Float  @default(0)
+  authority  Float  @default(0)
+  shareBait  Float  @default(0)
+
+  triggerPhrases Json?
+  highlighted    Json?
+  riskLabel      String
+
+  createdAt DateTime @default(now())
+
+  @@index([claimId])
+}
+
+model TrustedSource {
+  id        String     @id @default(uuid())
+  claimId   String
+  claim     Claim      @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  url       String
+  title     String?
+  publisher String?
+  type      SourceType @default(other)
+  trust     Float?
+  excerpt   String?
+  retrievedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([claimId])
+  @@index([url])
+}
+
+model VerifiedUpdate {
+  id          String      @id @default(uuid())
+  claimId     String
+  claim       Claim       @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  verdict     VerdictLabel @default(UNVERIFIED)
+  correction  String?
+  evidenceSnapshot Json?
+  generatedBy String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([claimId])
+}
+
+model CommunityVote {
+  id        String    @id @default(uuid())
+  claimId   String
+  claim     Claim     @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  value     VoteValue
+  reasoning String
+  weight    Float     @default(1)
+
+  createdAt DateTime @default(now())
+
+  evidence  VoteEvidence[]
+
+  @@unique([claimId, userId])
+  @@index([claimId])
+  @@index([userId])
+}
+
+model VoteEvidence {
+  id       String       @id @default(uuid())
+  voteId   String
+  vote     CommunityVote @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  type     EvidenceType  @default(link)
+  url      String?
+  note     String?
+
+  createdAt DateTime @default(now())
+
+  @@index([voteId])
+}
+
+model ValidatorProfile {
+  id             String @id @default(uuid())
+  userId         String @unique
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  reputation     Int    @default(0)
+  trustLevel     Float  @default(0.5)
+  badgesSummary  Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ExpertApplication {
+  id                String                 @id @default(uuid())
+  userId            String                 @unique
+  user              User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  category          String
+  institutionEmail  String?
+  profileUrl        String?
+  expertiseStatement String
+  proofLinks        Json?
+
+  status            ExpertApplicationStatus @default(pending)
+  moderatedByUserId String?
+  moderatedBy       User? @relation("ExpertModeration", fields: [moderatedByUserId], references: [id], onDelete: SetNull)
+  moderationNote    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+model Badge {
+  id          String @id @default(uuid())
+  code        String @unique
+  name        String
+  description String?
+
+  createdAt DateTime @default(now())
+
+  users UserBadge[]
+}
+
+model UserBadge {
+  id      String @id @default(uuid())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeId String
+  badge   Badge  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  awardedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+}
+
+model TrustScore {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score     Float    @default(0.5)
+  reasons   Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model ConsensusResult {
+  id             String      @id @default(uuid())
+  claimId        String      @unique
+  claim          Claim       @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  aiScore            Float?
+  communityScore     Float?
+  sourceReliability  Float?
+  finalScore         Float
+  verdict            VerdictLabel
+  confidencePercent  Float
+  disagreementIndex  Float @default(0)
+  reasonSummary      String?
+  evidenceSnapshot   Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FeaturedClaim {
+  id             String @id @default(uuid())
+  claimId        String
+  claim          Claim  @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  featuredScore  Float
+  whyFeatured    Json?
+  category       String?
+  riskLevel      String?
+  sourceTrust    Float?
+  virality       Float?
+  userEngagement Float?
+
+  featuredAt DateTime @default(now())
+
+  @@index([featuredAt])
+  @@index([featuredScore])
+  @@index([claimId])
+}
+
+model FactcheckSource {
+  id          String @id @default(uuid())
+  name        String
+  url         String
+  claimReviewUrl String?
+  trust       Float  @default(0.5)
+  region      String?
+  categories  Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ingestionLogs IngestionLog[]
+
+  @@unique([url])
+}
+
+model ClaimCluster {
+  id           String @id @default(uuid())
+  label        String?
+  centroidText String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  members ClaimClusterMember[]
+}
+
+model ClaimClusterMember {
+  id        String @id @default(uuid())
+  clusterId String
+  cluster   ClaimCluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+  claimId   String
+  claim     Claim       @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  similarity Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([clusterId, claimId])
+  @@index([clusterId])
+  @@index([claimId])
+}
+
+model IngestionLog {
+  id              String @id @default(uuid())
+  sourceId        String?
+  source          FactcheckSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  runKey          String
+  status          String
+  itemsFetched    Int    @default(0)
+  itemsUpserted   Int    @default(0)
+  error           String?
+  meta            Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([runKey])
+}
+
+model Alert {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  claimId   String?
+  claim     Claim?    @relation(fields: [claimId], references: [id], onDelete: SetNull)
+  type      AlertType
+  message   String
+  readAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([claimId])
+  @@index([createdAt])
+}
+
+model CategoryStat {
+  id        String @id @default(uuid())
+  day       DateTime
+  category  String
+  region    String?
+  totalClaims Int @default(0)
+  falseClaims Int @default(0)
+  misleadingClaims Int @default(0)
+  meta      Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([day, category, region])
+  @@index([day])
+}
+
+model RegionStat {
+  id        String @id @default(uuid())
+  day       DateTime
+  region    String
+  totalClaims Int @default(0)
+  falseClaims Int @default(0)
+  misleadingClaims Int @default(0)
+  meta      Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([day, region])
+  @@index([day])
+}
+
+model AuditLog {
+  id        String      @id @default(uuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    AuditAction
+  resourceType String?
+  resourceId   String?
+  ip        String?
+  userAgent String?
+  meta      Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([action])
+  @@index([userId])
+}
+
+// ─── Community Posts & AI Triage ───
+
+enum TriageLabel {
+  send_to_authority
+  ai_comment_only
+  needs_more_context
+  duplicate
+  low_priority
+}
+
+enum PostStatus {
+  pending_triage
+  triaged
+  sent_to_authority
+  authority_approved
+  authority_rejected
+  ai_commented
+  needs_context
+}
+
+model CommunityPost {
+  id              String      @id @default(uuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title           String
+  content         String
+  category        String?
+  mediaUrl        String?
+  mediaType       String?
+
+  // AI Triage scores
+  importanceScore  Float?
+  urgencyScore     Float?
+  intensityScore   Float?
+  credibilityScore Float?
+  ambiguityScore   Float?
+  triageLabel      TriageLabel?
+  triageReason     String?
+
+  // Status tracking
+  status           PostStatus  @default(pending_triage)
+  sentToAuthority  Boolean     @default(false)
+  authorityUserId  String?
+  authorityVerdict String?
+  authorityNote    String?
+  authorityAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments  CommunityPostComment[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([triageLabel])
+  @@index([createdAt])
+  @@index([sentToAuthority])
+}
+
+model CommunityPostComment {
+  id        String   @id @default(uuid())
+  postId    String
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId  String?
+  isAI      Boolean  @default(false)
+  content   String
+  commentType String @default("verdict")
+
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+}

@@ -1,0 +1,22 @@
+{
+  "name": "clarifact",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI + Community Misinformation Verification Platform",
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm start",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "prisma:generate": "cd backend && npx prisma generate",
+    "prisma:migrate": "cd backend && npx prisma migrate dev",
+    "prisma:studio": "cd backend && npx prisma studio",
+    "test:api": "cd backend && npm run test:api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "knip": "^6.12.2"
+  }
+}
